@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Shipper — Pitch Deck</title>
+<style>
+@import url('https://api.fontshare.com/v2/css?f[]=general-sans@300,400,600,700&f[]=jetbrains-mono@400&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --rds-navy:    #011347;
+  --rds-indigo:  #17244A;
+  --rds-royal:   #373AB4;
+  --rds-steel:   #7786B2;
+  --rds-slate:   #4E5D94;
+  --rds-powder:  #A2BFE2;
+  --rds-orange:  #F27B01;
+  --rds-offwhite:#F8F7FF;
+  --rds-paper:   #E9EAF2;
+  --rds-powder-tint: rgba(162,191,226,0.22);
+  --accent:      var(--rds-orange);
+  --border-light:var(--rds-powder);
+  --font-display:'General Sans','Helvetica Neue',Arial,sans-serif;
+  --font-mono:   'JetBrains Mono','Courier New',monospace;
+  --fw-light:300; --fw-reg:400; --fw-semi:600; --fw-bold:700;
+  --t-display:132px; --t-title:84px; --t-h2:60px;
+  --t-lead:42px; --t-body:32px; --t-small:26px; --t-cap:24px;
+  --pad-top:110px; --pad-bottom:96px; --pad-x:132px;
+  --radius-sm:2px; --radius-md:4px;
+  --sp-5:48px; --sp-6:56px; --sp-7:80px; --sp-8:96px;
+}
+
+html, body { width:100%; height:100%; background:#000; font-family:var(--font-display); }
+html.js-on, html.js-on body { overflow:hidden; }
+
+#deck {
+  width:1920px; height:1080px;
+  position:fixed; top:0; left:0;
+  transform-origin:0 0;
+}
+
+.slide {
+  width:1920px; height:1080px;
+  position:relative;
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+html.js-on .slide        { position:absolute; top:0; left:0; display:none; }
+html.js-on .slide.active { display:flex; }
+
+.slide-navy  { background:var(--rds-navy); }
+.slide-paper { background:var(--rds-paper); }
+
+.chrome {
+  position:absolute; z-index:10;
+  top:56px; left:var(--pad-x); right:var(--pad-x);
+  display:flex; justify-content:space-between; align-items:center;
+  pointer-events:none;
+}
+.ch {
+  font-family:var(--font-mono);
+  font-size:var(--t-cap);
+  letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--rds-steel);
+}
+
+.content {
+  flex:1;
+  padding:var(--pad-top) var(--pad-x) var(--pad-bottom);
+  display:flex; flex-direction:column;
+  gap:40px;
+}
+.vcenter { justify-content:center; }
+
+.eyebrow {
+  font-family:var(--font-mono);
+  font-size:var(--t-cap); letter-spacing:0.18em;
+  text-transform:uppercase; color:var(--rds-orange);
+  flex-shrink:0;
+}
+
+.hl {
+  font-family:var(--font-display);
+  font-weight:var(--fw-light);
+  font-size:var(--t-title);
+  line-height:1.05;
+  text-wrap:balance;
+  flex-shrink:0;
+}
+.hl strong { font-weight:var(--fw-bold); }
+.slide-navy  .hl        { color:var(--rds-offwhite); }
+.slide-navy  .hl strong { color:var(--rds-orange); }
+.slide-paper .hl        { color:var(--rds-royal); }
+.slide-paper .hl strong { color:var(--rds-navy); }
+
+.qt {
+  font-family:var(--font-display);
+  font-weight:var(--fw-light);
+  font-size:64px; line-height:1.2;
+  max-width:30ch;
+  text-wrap:balance;
+  flex-shrink:0;
+}
+.qt strong { font-weight:var(--fw-bold); }
+
+.lead {
+  font-family:var(--font-display);
+  font-size:var(--t-lead); line-height:1.4;
+  max-width:38ch; flex-shrink:0;
+}
+.slide-navy  .lead { color:var(--rds-powder); }
+.slide-paper .lead { color:var(--rds-slate); }
+
+.body-t {
+  font-family:var(--font-display);
+  font-size:var(--t-body); line-height:1.55;
+}
+.slide-navy  .body-t { color:var(--rds-powder); }
+.slide-paper .body-t { color:var(--rds-slate); }
+
+.sm {
+  font-family:var(--font-display);
+  font-size:var(--t-small); line-height:1.5;
+  flex-shrink:0;
+}
+.slide-navy  .sm { color:var(--rds-steel); }
+.slide-paper .sm { color:var(--rds-steel); }
+
+.mono-sm {
+  font-family:var(--font-mono);
+  font-size:var(--t-small); letter-spacing:0.06em;
+  flex-shrink:0;
+}
+.slide-navy  .mono-sm { color:var(--rds-steel); }
+.slide-paper .mono-sm { color:var(--rds-steel); }
+
+.cols { display:flex; gap:40px; flex:1; min-height:0; }
+
+.card {
+  flex:1;
+  background:var(--rds-offwhite);
+  border:1px solid var(--rds-powder);
+  border-radius:var(--radius-md);
+  padding:48px;
+  display:flex; flex-direction:column; gap:24px;
+}
+.card-accent { border-top:4px solid var(--rds-orange); }
+
+.card-label {
+  font-family:var(--font-mono);
+  font-size:var(--t-cap);
+  letter-spacing:0.18em; text-transform:uppercase;
+  flex-shrink:0;
+}
+
+.code-block {
+  background:var(--rds-navy);
+  border-radius:var(--radius-sm);
+  padding:44px 52px;
+  font-family:var(--font-mono);
+  font-size:26px; line-height:1.8;
+  flex-shrink:0;
+  display:flex; flex-direction:column;
+}
+.code-ln { display:flex; align-items:baseline; }
+.c-tree  { color:var(--rds-steel); white-space:pre; }
+.c-file  { color:var(--rds-offwhite); width:23ch; flex-shrink:0; }
+.c-note  { color:var(--rds-steel); }
+
+.curve {
+  position:absolute; right:-160px; bottom:-160px;
+  opacity:0.03; pointer-events:none; user-select:none;
+}
+
+@media print {
+  html, body { background:white; overflow:visible; }
+  #deck { transform:none !important; position:static; width:auto; height:auto; }
+  html.js-on .slide { position:relative !important; display:flex !important; page-break-after:always; }
+  .curve { display:none; }
+}
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- 01 · TITLE -->
+<section class="slide slide-navy" data-screen-label="01 Title">
+<div class="chrome">
+  <span class="ch">SHIPPER</span>
+  <span class="ch">01 / 08</span>
+</div>
+<svg class="curve" width="1280" height="980" viewBox="0 0 1280 980" fill="none" aria-hidden="true">
+  <path d="M-60 120 C 280 560, 600 600, 820 380 S 1160 60, 1340 220" stroke="#F8F7FF" stroke-width="3"/>
+  <path d="M-60 280 C 300 700, 620 740, 840 510 S 1180 200, 1340 360" stroke="#F8F7FF" stroke-width="3"/>
+  <path d="M-60 440 C 320 840, 640 880, 860 640 S 1200 340, 1340 500" stroke="#F8F7FF" stroke-width="3"/>
+  <path d="M-60 600 C 340 980, 660 1020, 880 770 S 1220 480, 1340 640" stroke="#F8F7FF" stroke-width="3"/>
+</svg>
+<div class="content vcenter">
+  <h1 class="hl">Shipper — <strong>decides before it drafts</strong></h1>
+  <p class="lead">The launch-pipeline operator for solo builders in rapid-build competitions</p>
+</div>
+</section>
+
+<!-- 02 · BIGQUOTE -->
+<section class="slide slide-navy" data-screen-label="02 BigQuote">
+<div class="chrome">
+  <span class="ch">SHIPPER</span>
+  <span class="ch">02 / 08</span>
+</div>
+<div class="content vcenter">
+  <blockquote class="qt" style="color:var(--rds-powder);">
+    "I kept rebuilding the launch stack from scratch. <strong style="color:var(--rds-offwhite);">Every single contest.</strong>"
+  </blockquote>
+  <p class="body-t" style="max-width:52ch; color:var(--rds-powder);">
+    The time that should go into the tool goes into materials instead — and the deadline doesn't move.
+  </p>
+</div>
+</section>
+
+<!-- 03 · COMPARISON -->
+<section class="slide slide-paper" data-screen-label="03 Comparison">
+<div class="chrome">
+  <span class="ch">SHIPPER</span>
+  <span class="ch">03 / 08</span>
+</div>
+<div class="content" style="gap:28px;">
+  <h2 class="hl">Same request. <strong>Two AIs.</strong></h2>
+  <p class="mono-sm" style="color:var(--rds-slate);">
+    "Can you draft me a landing page? Build's basically done — I'll add an example later."
+  </p>
+  <div class="cols">
+
+    <div class="card">
+      <p class="card-label" style="color:var(--rds-steel);">GENERIC AI</p>
+      <div class="body-t" style="display:flex; flex-direction:column; gap:12px;">
+        <p>"Absolutely — here's a landing page draft:</p>
+        <p>hero, feature grid, a call-to-action…</p>
+        <p style="margin-top:8px;">We'll swap in the example the moment it's ready."</p>
+      </div>
+    </div>
+
+    <div class="card card-accent">
+      <p class="card-label" style="color:var(--rds-orange);">SHIPPER</p>
+      <div class="body-t" style="display:flex; flex-direction:column; gap:10px;">
+        <p>"Gate 1 blocks before Gate 2 is reached.</p>
+        <p>A landing page pointing at a build with nothing to show converts no one — and erodes trust.</p>
+        <p style="margin-top:8px;"><span style="color:var(--rds-orange); font-weight:700;">BLOCK</span> — Commit one real run first. The page is drafted the moment there's something to point at."</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- 04 · SECTION -->
+<section class="slide slide-navy" data-screen-label="04 Section">
+<div class="chrome">
+  <span class="ch">SHIPPER</span>
+  <span class="ch">04 / 08</span>
+</div>
+<div class="content vcenter" style="gap:0;">
+  <h2 class="hl" style="margin-bottom:40px;"><strong>Four gates.</strong> No menu.</h2>
+  <div class="body-t" style="display:flex; flex-direction:column; gap:18px; max-width:50ch;">
+    <p>→ Readiness — blocks or passes</p>
+    <p>→ Leverage — routes by payoff, not by what you asked for</p>
+    <p>→ Hook — picks one, self-checks against five failure rules</p>
+    <p>→ Flags — catches what sinks launches</p>
+  </div>
+  <p class="sm" style="margin-top:40px;">You come back to a plan and drafts.</p>
+</div>
+</section>
+
+<!-- 05 · DATA -->
+<section class="slide slide-paper" data-screen-label="05 Data">
+<div class="chrome">
+  <span class="ch">SHIPPER</span>
+  <span class="ch">05 / 08</span>
+</div>
+<div class="content vcenter" style="gap:0;">
+  <h2 class="hl" style="margin-bottom:48px;"><strong>One run.</strong> Six artifacts.</h2>
+  <div class="body-t" style="display:flex; flex-direction:column; gap:8px; color:var(--rds-slate);">
+    <p>Pitch blurb · Landing copy · 60-second script</p>
+    <p>Pitch deck · Judge guide · Duel storyboard</p>
+  </div>
+  <p class="mono-sm" style="margin-top:44px; max-width:56ch;">
+    Tier-ordered for the runway you have. Not what you asked for — what earns the effort.
+  </p>
+</div>
+</section>
+
+<!-- 06 · CODE / PROOF -->
+<section class="slide slide-paper" data-screen-label="06 Code">
+<div class="chrome">
+  <span class="ch">SHIPPER</span>
+  <span class="ch">06 / 08</span>
+</div>
+<div class="content" style="gap:28px;">
+  <h2 class="hl"><strong>Two sites.</strong> Both shipped.</h2>
+  <div class="cols">
+
+    <div class="card">
+      <p class="card-label" style="color:var(--rds-steel);">SONAR</p>
+      <p class="body-t" style="color:var(--rds-slate); flex:1;">
+        Prospect-qualification operator. Scores studios against a 107-point fit framework and returns one verdict.
+      </p>
+      <div style="border-top:1px solid var(--rds-powder); padding-top:20px;">
+        <p class="mono-sm" style="color:var(--rds-steel); font-size:20px; margin-bottom:6px;">LIVE AT</p>
+        <p class="mono-sm" style="color:var(--rds-orange);">[ sonar url ]</p>
+      </div>
+    </div>
+
+    <div class="card card-accent">
+      <p class="card-label" style="color:var(--rds-orange);">SHIPPER</p>
+      <p class="body-t" style="color:var(--rds-slate); flex:1;">
+        Launch-pipeline operator. Reads a finished build, runs four gates, returns a plan with drafts — or a block.
+      </p>
+      <div style="border-top:1px solid var(--rds-powder); padding-top:20px;">
+        <p class="mono-sm" style="color:var(--rds-steel); font-size:20px; margin-bottom:6px;">LIVE AT</p>
+        <p class="mono-sm" style="color:var(--rds-orange);">[ shipper url ]</p>
+      </div>
+    </div>
+
+  </div>
+  <p class="sm" style="color:var(--rds-slate);">
+    A judge can open both before they read this slide.
+  </p>
+</div>
+</section>
+
+<!-- 07 · BIGQUOTE -->
+<section class="slide slide-navy" data-screen-label="07 BigQuote">
+<div class="chrome">
+  <span class="ch">SHIPPER</span>
+  <span class="ch">07 / 08</span>
+</div>
+<div class="content vcenter">
+  <blockquote class="qt" style="color:var(--rds-offwhite);">
+    "<strong style="color:var(--rds-orange);">Built by a repeat contest entrant.</strong>"
+  </blockquote>
+  <p class="body-t" style="max-width:54ch;">
+    "Multiple submissions, one pattern: built the tool, scrambled the launch. Wanted to focus on making something good — so I built the thing that handles the rest."
+  </p>
+  <p class="mono-sm" style="color:var(--rds-powder);">— Roc Lee, ICM</p>
+</div>
+</section>
+
+<!-- 08 · TITLE CTA -->
+<section class="slide slide-navy" data-screen-label="08 Title">
+<div class="chrome">
+  <span class="ch">SHIPPER</span>
+  <span class="ch">08 / 08</span>
+</div>
+<svg class="curve" width="1280" height="980" viewBox="0 0 1280 980" fill="none" aria-hidden="true">
+  <path d="M-60 120 C 280 560, 600 600, 820 380 S 1160 60, 1340 220" stroke="#F8F7FF" stroke-width="3"/>
+  <path d="M-60 280 C 300 700, 620 740, 840 510 S 1180 200, 1340 360" stroke="#F8F7FF" stroke-width="3"/>
+  <path d="M-60 440 C 320 840, 640 880, 860 640 S 1200 340, 1340 500" stroke="#F8F7FF" stroke-width="3"/>
+  <path d="M-60 600 C 340 980, 660 1020, 880 770 S 1220 480, 1340 640" stroke="#F8F7FF" stroke-width="3"/>
+</svg>
+<div class="content vcenter" style="gap:0;">
+  <h1 class="hl" style="margin-bottom:40px;"><strong>Get</strong> Shipper.</h1>
+  <p class="lead" style="margin-bottom:44px;">Drop the folder into any Claude project.</p>
+  <p class="mono-sm" style="margin-bottom:20px;">
+    Create project → Add slipway/ files → Set instructions → Paste your repo
+  </p>
+  <p class="mono-sm" style="color:var(--rds-powder);">github.com/[repo]</p>
+</div>
+</section>
+
+</div><!-- /#deck -->
+
+<script>
+(function(){
+  var html   = document.documentElement;
+  var deck   = document.getElementById('deck');
+  var slides = Array.from(document.querySelectorAll('#deck .slide'));
+  var cur    = 0;
+
+  html.classList.add('js-on');
+
+  function fit(){
+    var s  = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    var ox = (window.innerWidth  - 1920 * s) / 2;
+    var oy = (window.innerHeight - 1080 * s) / 2;
+    deck.style.transform = 'scale(' + s + ')';
+    deck.style.left      = ox + 'px';
+    deck.style.top       = oy + 'px';
+  }
+
+  function go(n){
+    if(n < 0 || n >= slides.length) return;
+    slides[cur].classList.remove('active');
+    cur = n;
+    slides[cur].classList.add('active');
+    try{ localStorage.setItem('shipper-deck', cur); }catch(e){}
+  }
+
+  try{
+    var sv = parseInt(localStorage.getItem('shipper-deck') || '0', 10);
+    if(!isNaN(sv) && sv >= 0 && sv < slides.length) cur = sv;
+  }catch(e){}
+  slides[cur].classList.add('active');
+
+  fit();
+  window.addEventListener('resize', fit);
+
+  document.addEventListener('keydown', function(e){
+    switch(e.key){
+      case 'ArrowRight': case 'ArrowDown': case ' ':
+        e.preventDefault(); go(cur + 1); break;
+      case 'ArrowLeft': case 'ArrowUp':
+        e.preventDefault(); go(cur - 1); break;
+      case 'Home': e.preventDefault(); go(0); break;
+      case 'End':  e.preventDefault(); go(slides.length - 1); break;
+    }
+  });
+
+  document.addEventListener('click', function(e){
+    if(e.clientX >= window.innerWidth / 2) go(cur + 1);
+    else go(cur - 1);
+  });
+})();
+</script>
+</body>
+</html>

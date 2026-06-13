@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Judge Guide — Shipper</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@300,400,500,600,700&f[]=jetbrains-mono@400,500,600&f[]=fraunces@400,500,600&display=swap" rel="stylesheet">
+<style>
+/* ── RDS tokens ── */
+:root {
+  --rds-navy:    #011347;
+  --rds-indigo:  #17244A;
+  --rds-royal:   #373AB4;
+  --rds-steel:   #7786B2;
+  --rds-slate:   #4E5D94;
+  --rds-powder:  #A2BFE2;
+  --rds-orange:  #F27B01;
+  --rds-offwhite:#F8F7FF;
+  --rds-paper:   #E9EAF2;
+  --rds-powder-tint: rgba(162, 191, 226, 0.22);
+  --rds-navy-tint:   rgba(1, 19, 71, 0.06);
+
+  --surface-page:    var(--rds-paper);
+  --surface-section: var(--rds-navy);
+  --surface-card:    var(--rds-offwhite);
+  --text-body:       var(--rds-slate);
+  --text-body-soft:  var(--rds-steel);
+  --text-on-navy:    var(--rds-offwhite);
+  --text-on-paper:   var(--rds-navy);
+  --accent:          var(--rds-orange);
+  --accent-on:       var(--rds-navy);
+  --border-light:    var(--rds-powder);
+  --rule:            var(--rds-powder-tint);
+  --border-hair:     1px solid var(--border-light);
+  --border-accent:   4px solid var(--accent);
+
+  --font-display: 'General Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body:    'General Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+  --font-serif:   'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --fw-light: 300; --fw-reg: 400; --fw-med: 500; --fw-semi: 600; --fw-bold: 700;
+
+  --f-h2:      clamp(1.8rem, 3.6vw, 2.7rem);
+  --f-lead:    clamp(1.1rem, 1.7vw, 1.35rem);
+  --f-body:    1.0625rem;
+  --gutter:    clamp(1.25rem, 5vw, 4.5rem);
+  --lh-web-body: 1.6;
+  --lh-head:   1.08;
+  --track-headline: -0.022em;
+  --track-cap: 0.18em;
+
+  --sp-2: 16px; --sp-3: 24px; --sp-4: 32px;
+  --sp-5: 48px; --sp-6: 56px; --sp-7: 80px; --sp-8: 96px;
+  --measure-body: 60ch;
+  --radius-sm: 2px; --radius-md: 4px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 180ms; --dur: 320ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  font-size: var(--f-body);
+  line-height: var(--lh-web-body);
+  color: var(--text-body);
+  background: var(--surface-page);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Nav (rds-nav pattern) ── */
+.rds-nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-4); padding: var(--sp-2) var(--gutter);
+  background: rgba(1, 19, 71, 0.72);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  backdrop-filter: blur(12px) saturate(1.2);
+}
+.rds-nav .wordmark {
+  font-family: var(--font-display); font-weight: var(--fw-semi);
+  font-size: 1.05rem; color: var(--rds-offwhite); text-decoration: none;
+  transition: color var(--dur-fast) var(--ease);
+}
+.rds-nav .wordmark:hover { color: var(--accent); }
+.rds-navlink {
+  color: var(--rds-powder); text-decoration: none; font-size: .95rem;
+  transition: color var(--dur-fast) var(--ease);
+}
+.rds-navlink:hover { color: var(--accent); }
+.nav-label {
+  font-family: var(--font-mono); font-size: 0.72rem;
+  letter-spacing: var(--track-cap); text-transform: uppercase;
+  color: var(--rds-steel);
+}
+
+/* ── Hero (navy section header) ── */
+.page-hero {
+  background: var(--surface-section);
+  padding: clamp(3.5rem, 10vh, 6rem) var(--gutter) clamp(3rem, 8vh, 5rem);
+}
+.page-hero .inner { max-width: 860px; margin: 0 auto; }
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem; letter-spacing: var(--track-cap); text-transform: uppercase;
+  color: var(--accent); margin-bottom: var(--sp-3);
+}
+.page-hero h1 {
+  font-family: var(--font-serif); font-weight: var(--fw-reg);
+  font-size: var(--f-h2); line-height: var(--lh-head);
+  letter-spacing: var(--track-headline);
+  color: var(--rds-offwhite); margin-bottom: var(--sp-3);
+}
+.page-hero .lead {
+  font-size: var(--f-lead); color: var(--rds-powder);
+  max-width: 52ch; line-height: var(--lh-web-body);
+}
+
+/* ── Content ── */
+.content { max-width: 860px; margin: 0 auto; padding: var(--sp-8) var(--gutter); }
+
+/* ── How to run callout (rds-card + accent border) ── */
+.rds-card {
+  background: var(--surface-card);
+  border: var(--border-hair);
+  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+}
+.rds-card--accent { border-left: var(--border-accent); }
+
+.how-to-run { margin-bottom: var(--sp-7); }
+.how-to-run .card-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem; letter-spacing: var(--track-cap); text-transform: uppercase;
+  color: var(--accent); margin-bottom: var(--sp-2);
+}
+.how-to-run p { font-size: 0.92rem; color: var(--text-body); line-height: 1.75; }
+.how-to-run code {
+  font-family: var(--font-mono); font-size: 0.84em;
+  background: var(--rds-navy-tint); color: var(--rds-navy);
+  padding: 0.1em 0.38em; border-radius: var(--radius-sm);
+}
+
+/* ── Test cards ── */
+.test-card {
+  border-top: 1px solid var(--rule);
+  padding: var(--sp-6) 0;
+}
+.test-card:last-of-type { border-bottom: 1px solid var(--rule); }
+
+.test-num {
+  font-family: var(--font-mono);
+  font-size: 0.68rem; letter-spacing: var(--track-cap); text-transform: uppercase;
+  color: var(--accent); margin-bottom: 10px;
+}
+.test-title {
+  font-family: var(--font-display); font-weight: var(--fw-semi);
+  font-size: 1.1rem; color: var(--text-on-paper);
+  letter-spacing: var(--track-headline); margin-bottom: var(--sp-4);
+}
+
+.test-row { margin-bottom: var(--sp-3); }
+.test-row-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-body-soft); margin-bottom: 8px;
+}
+
+/* Fire block — navy code surface */
+.fire-block {
+  background: var(--rds-navy);
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: 0.84rem; color: var(--rds-powder);
+  line-height: 1.7;
+}
+.fire-block code { color: var(--accent); }
+
+/* Expect block — rds-card with accent border */
+.expect-block {
+  background: var(--surface-card);
+  border: var(--border-hair);
+  border-left: var(--border-accent);
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-4);
+  font-size: 0.92rem; color: var(--text-body); line-height: 1.75;
+}
+.expect-block strong { color: var(--text-on-paper); font-weight: var(--fw-semi); }
+.expect-block code {
+  font-family: var(--font-mono); font-size: 0.84em;
+  color: var(--accent); background: rgba(242, 123, 1, 0.08);
+  padding: 0.1em 0.38em; border-radius: var(--radius-sm);
+}
+
+/* Why block */
+.why-block {
+  font-size: 0.9rem; color: var(--text-body-soft);
+  line-height: 1.75; font-style: italic;
+}
+
+/* ── Button (rds-btn) ── */
+.rds-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5em;
+  font-family: var(--font-display); font-weight: var(--fw-semi); font-size: 1rem;
+  line-height: 1; padding: .85rem 1.6rem; min-height: 44px;
+  background: var(--rds-navy); color: var(--rds-offwhite);
+  border: 0; border-radius: var(--radius-md); cursor: pointer; text-decoration: none;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.rds-btn:hover { background: var(--accent); color: var(--accent-on); }
+.rds-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ── Footer (rds-footer) ── */
+.rds-footer {
+  background: var(--surface-section);
+  color: rgba(162, 191, 226, 0.7);
+  padding: var(--sp-6) var(--gutter) var(--sp-5);
+}
+.footer-inner {
+  max-width: 860px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4);
+}
+.footer-brand {
+  font-family: var(--font-display); font-weight: var(--fw-semi);
+  font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--rds-steel);
+}
+
+@media (max-width: 600px) {
+  .content { padding: var(--sp-6) var(--gutter); }
+  .fire-block, .expect-block { padding: var(--sp-3); }
+}
+</style>
+</head>
+<body>
+
+<nav class="rds-nav">
+  <a href="../shipper-landing/index.html" class="wordmark">← Shipper</a>
+  <span class="nav-label">Judge Guide</span>
+</nav>
+
+<header class="page-hero">
+  <div class="inner">
+    <p class="eyebrow">Judge Guide</p>
+    <h1>Shipper</h1>
+    <p class="lead">Paste each prompt into Shipper (Claude project with slipway files in knowledge). The Expect line says what a correct response looks like — if you don't see it, the build failed its own claim.</p>
+  </div>
+</header>
+
+<div class="content">
+
+  <div class="how-to-run rds-card rds-card--accent">
+    <p class="card-label">How to run</p>
+    <p>Open <code>slipway/identity.md</code> and <code>slipway/rules.md</code>. Add every file in the folder to a Claude project's knowledge. Set instructions: <code>"Read identity.md and rules.md. You are Shipper. Run the four gates in order."</code> Then paste the prompt below.</p>
+  </div>
+
+  <!-- 01 -->
+  <div class="test-card">
+    <p class="test-num">01</p>
+    <p class="test-title">The Gate 1 block</p>
+    <div class="test-row">
+      <p class="test-row-label">Fire</p>
+      <div class="fire-block">"Here's my build: I'm making a prospect-qualification operator for my design studio. Still working on the examples — I'll add them after the deadline. Can you draft me a landing page?"</div>
+    </div>
+    <div class="test-row">
+      <p class="test-row-label">Expect</p>
+      <div class="expect-block"><code>BLOCK</code>. Shipper refuses to draft the landing page and says something close to: <strong>"Commit one real run first. A landing page pointing at a build with nothing to show converts no one. That's the highest-leverage 20 minutes you have — the materials are drafted the moment there's something for them to point at."</strong><br><br>It names what's missing specifically (no worked sample). It does <strong>not</strong> draft any landing copy.</div>
+    </div>
+    <div class="test-row">
+      <p class="test-row-label">Why it matters</p>
+      <p class="why-block">Gate 1 is non-negotiable. A landing page on a build with no proof erodes trust rather than building it.</p>
+    </div>
+  </div>
+
+  <!-- 02 -->
+  <div class="test-card">
+    <p class="test-num">02</p>
+    <p class="test-title">The leverage routing decision</p>
+    <div class="test-row">
+      <p class="test-row-label">Fire</p>
+      <div class="fire-block">"My build is ready. I have 90 minutes. [Paste a short operator description with a sample output committed in the README.]"</div>
+    </div>
+    <div class="test-row">
+      <p class="test-row-label">Expect</p>
+      <div class="expect-block">Shipper names <strong>Tier 1</strong> — pitch blurb and README hook polish — as the first material to produce, and explains why it comes before the landing page and video. It does <strong>not</strong> jump to a flashier tier.<br><br>If the blurb is already done and committed, it routes to Tier 2 (landing page) and says why.</div>
+    </div>
+    <div class="test-row">
+      <p class="test-row-label">Why it matters</p>
+      <p class="why-block">Gate 2 routes by payoff, not by what was requested. The blurb is the floor — nothing ships without it.</p>
+    </div>
+  </div>
+
+  <!-- 03 -->
+  <div class="test-card">
+    <p class="test-num">03</p>
+    <p class="test-title">The hook-loop pause (the one sanctioned pause)</p>
+    <div class="test-row">
+      <p class="test-row-label">Fire</p>
+      <div class="fire-block">"I built a tool that turns meeting notes into action items for my team. It works great, runs clean. We use it every week. Help me launch it."</div>
+    </div>
+    <div class="test-row">
+      <p class="test-row-label">Expect</p>
+      <div class="expect-block">Gate 3 finds no obvious duel, no named refusal, and the lived expertise is unremarkable. Shipper proposes a hook, self-evaluates it against the 5 weak-hook rules, names the rule if it fails, re-proposes, and then <strong>pauses</strong>: <code>"Here's the hook I'm proposing: [line]. Yes to proceed / No to revise?"</code><br><br>It does <strong>not</strong> draft any blurb, landing hero, or script until it has a yes.</div>
+    </div>
+    <div class="test-row">
+      <p class="test-row-label">Why it matters</p>
+      <p class="why-block">The one sanctioned pause. Shipper doesn't ship a generic hook silently — and it doesn't wait for you to approve a hook it knows is weak.</p>
+    </div>
+  </div>
+
+  <!-- 04 -->
+  <div class="test-card">
+    <p class="test-num">04</p>
+    <p class="test-title">The persona flag</p>
+    <div class="test-row">
+      <p class="test-row-label">Fire</p>
+      <div class="fire-block">"I built an intake operator for wedding photographers. I researched their workflow thoroughly — interviewed five photographers, read all the forums. I'm not a photographer myself."</div>
+    </div>
+    <div class="test-row">
+      <p class="test-row-label">Expect</p>
+      <div class="expect-block">Gate 4 <code>FLAG</code>. Shipper says something close to: <strong>"This will read as researched, which caps it. Options: (1) reframe toward a workflow you've actually run, (2) own it explicitly in the copy — 'built from N photographer interviews, not lived,' or (3) if you ship as-is, lead with the system design, not a founder story you don't have."</strong><br><br>It does <strong>not</strong> proceed as if the expertise is lived.</div>
+    </div>
+    <div class="test-row">
+      <p class="test-row-label">Why it matters</p>
+      <p class="why-block">Distribution amplifies a real founder; it doesn't manufacture one. Gate 4 catches this before effort is spent.</p>
+    </div>
+  </div>
+
+  <!-- 05 -->
+  <div class="test-card">
+    <p class="test-num">05</p>
+    <p class="test-title">The full run</p>
+    <div class="test-row">
+      <p class="test-row-label">Fire</p>
+      <div class="fire-block">Paste the content of <code>slipway/identity.md</code> and <code>slipway/rules.md</code>. Then add: "Runway: one day. Domain: AI contest tooling for rapid-build competitions. Audience: solo builders. Here's the repo: [paste the slipway README]."</div>
+    </div>
+    <div class="test-row">
+      <p class="test-row-label">Expect</p>
+      <div class="expect-block">Gate 1 <code>PASS</code> (worked sample in <code>sample-run/</code>, README passes, 5 files present). Gate 2 routes to Tier 1 (blurb + README hook). Gate 3 detects the duel hook and self-checks it. Gate 4 <code>CLEAR</code> (lived, no regulated domain — but may note the multi-week/repeat-entrant arc). Hands back a launch plan with the blurb drafted.</div>
+    </div>
+    <div class="test-row">
+      <p class="test-row-label">Why it matters</p>
+      <p class="why-block">The full gate sequence on a real input — proves the operator runs end to end, not just in isolation.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer class="rds-footer">
+  <div class="footer-inner">
+    <span class="footer-brand">Clean Cuts Interactive</span>
+    <a href="../shipper-landing/index.html" class="rds-btn">← Back to Shipper</a>
+  </div>
+</footer>
+
+</body>
+</html>

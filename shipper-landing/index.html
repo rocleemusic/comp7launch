@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shipper — launch pipeline operator</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<style>
+@import url('https://api.fontshare.com/v2/css?f[]=general-sans@300,400,500,600&f[]=jetbrains-mono@400&f[]=fraunces@400,500&display=swap');
+
+:root {
+  /* ── Base palette ── */
+  --rds-navy: #011347;
+  --rds-indigo: #17244A;
+  --rds-royal: #373AB4;
+  --rds-steel: #7786B2;
+  --rds-slate: #4E5D94;
+  --rds-powder: #A2BFE2;
+  --rds-orange: #F27B01;
+  --rds-offwhite: #F8F7FF;
+  --rds-paper: #E9EAF2;
+
+  /* ── Tints ── */
+  --rds-powder-tint: rgba(162, 191, 226, 0.22);
+  --rds-navy-tint: rgba(1, 19, 71, 0.06);
+
+  /* ── Semantic aliases ── */
+  --surface-page: var(--rds-paper);
+  --surface-section: var(--rds-navy);
+  --surface-card: var(--rds-offwhite);
+  --surface-code: var(--rds-navy);
+  --text-headline: var(--rds-royal);
+  --text-headline-bold: var(--rds-navy);
+  --text-body: var(--rds-slate);
+  --text-body-soft: var(--rds-steel);
+  --text-body-invert: var(--rds-powder);
+  --text-on-navy: var(--rds-offwhite);
+  --text-on-paper: var(--rds-navy);
+  --accent: var(--rds-orange);
+  --accent-on: var(--rds-navy);
+  --border-light: var(--rds-powder);
+  --rule: var(--rds-powder-tint);
+  --border-hair: 1px solid var(--border-light);
+  --border-accent: 4px solid var(--accent);
+
+  /* ── Type ── */
+  --font-serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'General Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'General Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --fw-light: 300; --fw-reg: 400; --fw-med: 500; --fw-semi: 600;
+
+  --f-display: clamp(2.7rem, 6.2vw, 4.7rem);
+  --f-h2: clamp(1.8rem, 3.6vw, 2.7rem);
+  --f-pull: clamp(1.35rem, 2.4vw, 1.7rem);
+  --f-lead: clamp(1.1rem, 1.7vw, 1.35rem);
+  --f-body: 1.0625rem;
+  --gutter: clamp(1.25rem, 5vw, 4.5rem);
+  --lh-web-body: 1.6;
+  --lh-head: 1.08;
+  --track-headline: -0.022em;
+  --track-cap: 0.18em;
+
+  /* ── Spacing ── */
+  --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px;
+  --sp-5: 48px; --sp-6: 56px; --sp-7: 80px; --sp-8: 96px;
+  --measure-headline: 26ch;
+  --measure-body: 60ch;
+
+  /* ── Shape + motion ── */
+  --radius-sm: 2px; --radius-md: 4px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 180ms; --dur: 320ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--f-body);
+  line-height: var(--lh-web-body);
+  color: var(--text-body);
+  background: var(--surface-page);
+  -webkit-font-smoothing: antialiased;
+}
+
+.hl {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  font-weight: var(--fw-reg);
+  line-height: var(--lh-head);
+  letter-spacing: var(--track-headline);
+  text-wrap: balance;
+}
+.hl .ember { font-style: italic; font-weight: var(--fw-reg); color: var(--accent); }
+
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-4); padding: var(--sp-2) var(--gutter);
+  background: rgba(1, 19, 71, 0.72);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  backdrop-filter: blur(12px) saturate(1.2);
+}
+.wordmark {
+  font-family: var(--font-display); font-weight: var(--fw-semi);
+  font-size: 1.05rem; color: var(--rds-offwhite); text-decoration: none;
+  transition: color var(--dur-fast) var(--ease);
+}
+.wordmark:hover { color: var(--accent); }
+.navlink {
+  font-family: var(--font-display); font-size: 0.95rem;
+  color: var(--rds-powder); text-decoration: none;
+  transition: color var(--dur-fast) var(--ease);
+}
+.navlink:hover { color: var(--accent); }
+
+.sec { padding: var(--sp-8) var(--gutter); }
+.sec-paper { background: var(--surface-page); }
+.sec-navy { background: var(--surface-section); }
+.inner { max-width: 1100px; margin: 0 auto; }
+
+.sec-head {
+  font-size: var(--f-h2);
+  color: var(--text-on-paper);
+  max-width: var(--measure-headline);
+  margin-bottom: var(--sp-6);
+}
+
+.cta {
+  display: inline-flex; align-items: center; gap: 0.5em;
+  font-family: var(--font-display); font-weight: var(--fw-semi); font-size: 1rem;
+  line-height: 1; min-height: 44px; padding: 0.85rem 1.6rem;
+  color: var(--rds-offwhite); background: var(--rds-navy);
+  border: 0; border-radius: var(--radius-md); text-decoration: none; cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.cta:hover { background: var(--accent); color: var(--accent-on); }
+.cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.hero {
+  position: relative; overflow: hidden;
+  background: var(--surface-section); color: var(--text-on-navy);
+  padding: clamp(4.5rem, 13vh, 9rem) var(--gutter);
+  min-height: 76vh; display: flex; flex-direction: column; justify-content: center;
+}
+.wing { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.wing svg {
+  position: absolute; left: -6%; top: 50%; transform: translateY(-50%);
+  width: 118%; height: auto; opacity: 0.9;
+}
+.wing path { stroke-dasharray: 1; stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .wing path { stroke-dashoffset: 1; animation: wing-draw 1.9s var(--ease) 0.8s forwards; }
+}
+@keyframes wing-draw { to { stroke-dashoffset: 0; } }
+
+.hero-scrim {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(135% 100% at 16% 48%,
+    var(--rds-navy) 0%,
+    rgba(1, 19, 71, 0.94) 28%,
+    rgba(1, 19, 71, 0.6) 55%,
+    rgba(1, 19, 71, 0) 100%);
+}
+.hero-content { position: relative; z-index: 2; max-width: var(--measure-body); }
+.hero-h1 {
+  font-size: var(--f-display);
+  color: var(--rds-offwhite);
+  margin-bottom: var(--sp-4);
+}
+.hero-sub {
+  font-size: var(--f-lead); color: var(--rds-powder);
+  max-width: 42ch; line-height: var(--lh-web-body); margin-bottom: var(--sp-6);
+}
+
+.do-list {
+  list-style: none; border-top: 1px solid var(--rule);
+  display: flex; flex-direction: column;
+}
+.do-item {
+  display: grid; grid-template-columns: 3.5rem 1fr; gap: var(--sp-3);
+  align-items: baseline; padding: var(--sp-4) 0; border-bottom: 1px solid var(--rule);
+}
+.do-num {
+  font-family: var(--font-serif); font-weight: var(--fw-reg);
+  font-size: clamp(1.6rem, 3vw, 2.3rem); line-height: 1; color: var(--rds-royal);
+  font-variant-numeric: lining-nums;
+}
+.do-text { color: var(--text-body); font-size: var(--f-lead); max-width: 46ch; }
+.do-text strong { color: var(--rds-navy); font-weight: var(--fw-semi); }
+
+.duel-prompt {
+  font-family: var(--font-mono); font-size: 0.82rem; color: var(--rds-slate);
+  background: var(--surface-card); border: var(--border-hair); border-radius: var(--radius-sm);
+  padding: var(--sp-3) var(--sp-4); text-align: center;
+  max-width: 56ch; margin: 0 auto var(--sp-5);
+}
+.duel-cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); margin-bottom: var(--sp-5); }
+.duel-label {
+  display: block; font-family: var(--font-display); font-weight: var(--fw-semi);
+  font-size: 0.9rem; letter-spacing: 0.01em; margin-bottom: var(--sp-3);
+}
+.duel-generic {
+  background: var(--surface-card); color: var(--text-on-paper);
+  border: var(--border-hair); border-radius: var(--radius-md); padding: var(--sp-4);
+}
+.duel-generic .duel-label { color: var(--text-body-soft); }
+.duel-generic p { font-size: 0.98rem; line-height: 1.65; }
+.duel-generic ul { list-style: none; margin: 0.4rem 0; }
+.duel-generic li { padding-left: 1.1em; position: relative; }
+.duel-generic li::before { content: "•"; position: absolute; left: 0; color: var(--rds-steel); }
+.duel-shipper {
+  background: var(--surface-code); color: var(--text-on-navy);
+  border-top: var(--border-accent); border-radius: var(--radius-md); padding: var(--sp-4);
+}
+.duel-shipper .duel-label { color: var(--accent); font-family: var(--font-mono); letter-spacing: var(--track-cap); text-transform: uppercase; font-size: 0.72rem; }
+.duel-shipper pre {
+  font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.85;
+  color: var(--rds-powder); white-space: pre-wrap; margin: 0;
+}
+.duel-shipper .block { color: var(--accent); font-weight: 500; }
+.duel-payoff {
+  font-family: var(--font-serif); font-style: italic; font-size: var(--f-pull);
+  color: var(--rds-navy); text-align: center; max-width: 30ch; margin: 0 auto;
+  padding-top: var(--sp-5); border-top: 1px solid var(--rule); line-height: 1.4;
+}
+
+.founder {
+  border-left: var(--border-accent); padding-left: var(--sp-4);
+  max-width: var(--measure-body);
+}
+.founder-quote {
+  font-family: var(--font-serif); font-style: italic; font-weight: var(--fw-reg);
+  font-size: var(--f-pull); line-height: 1.5; color: var(--rds-offwhite);
+  margin-bottom: var(--sp-3);
+}
+.founder-attr {
+  font-family: var(--font-display); font-weight: var(--fw-semi);
+  font-size: 0.95rem; color: var(--rds-powder);
+}
+
+.repo-row { font-size: var(--f-lead); color: var(--text-body); margin-bottom: var(--sp-5); }
+.repo-path { font-family: var(--font-mono); font-size: 0.9rem; color: var(--rds-navy); }
+.link {
+  color: var(--rds-navy); text-decoration: none; padding-bottom: 1px;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat; background-position: 0 100%; background-size: 0% 2px;
+  transition: background-size var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.link:hover { background-size: 100% 2px; color: var(--rds-royal); }
+.setup-list { list-style: none; border-top: 1px solid var(--rule); }
+.setup-item {
+  display: grid; grid-template-columns: 2rem 1fr; gap: var(--sp-3);
+  padding: var(--sp-4) 0; border-bottom: 1px solid var(--rule); align-items: baseline;
+}
+.setup-num {
+  font-family: var(--font-serif); font-weight: var(--fw-reg);
+  font-size: 1.5rem; line-height: 1; color: var(--rds-royal);
+}
+.setup-text { color: var(--text-body); }
+.setup-text code {
+  font-family: var(--font-mono); font-size: 0.8rem; color: var(--rds-navy);
+  background: var(--rds-navy-tint); padding: 0.15em 0.4em; border-radius: var(--radius-sm);
+}
+
+.video-embed {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  margin-top: var(--sp-5);
+  background: var(--surface-card);
+  border: var(--border-hair);
+}
+.video-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.secondary-links {
+  display: flex;
+  gap: var(--sp-4);
+  margin-top: var(--sp-5);
+}
+.secondary-link {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: var(--fw-semi);
+  color: var(--text-body-soft);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 2px;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.secondary-link:hover { color: var(--rds-navy); border-bottom-color: var(--accent); }
+
+@media (max-width: 680px) {
+  .duel-cols { grid-template-columns: 1fr; }
+  .sec { padding: var(--sp-7) var(--gutter); }
+  .hero { min-height: 70vh; }
+  .wing svg { width: 150%; left: -25%; opacity: 0.7; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#" class="wordmark">Shipper</a>
+  <a href="#get-it" class="navlink">Get it →</a>
+</nav>
+
+<!-- ─── Hero ─── -->
+<header class="hero">
+  <div class="wing" aria-hidden="true">
+    <svg viewBox="0 -90 940 620" fill="none" role="img" aria-label="Fletcher–Munson wing">
+      <g stroke-linecap="round">
+        <path pathLength="1" stroke="#A2BFE2" stroke-width="2" opacity="0.5" d="M-20 -70 L-13 -66.2 L-6 -62.3 L1 -58.3 L8 -54.4 L15 -50.4 L22 -46.3 L29 -42.3 L36 -38.2 L43 -34.1 L50 -30.1 L57 -26 L64 -21.9 L71 -17.8 L78 -13.7 L85 -9.7 L92 -5.7 L99 -1.6 L106 2.3 L113 6.3 L120 10.2 L127 14.1 L134 17.9 L141 21.7 L148 25.5 L155 29.2 L162 32.8 L169 36.4 L176 39.9 L183 43.4 L190 46.8 L197 50.1 L204 53.3 L211 56.5 L218 59.6 L225 62.6 L232 65.5 L239 68.3 L246 71.1 L253 73.8 L260 76.3 L267 78.8 L274 81.1 L281 83.4 L288 85.5 L295 87.6 L302 89.5 L309 91.3 L316 93 L323 94.6 L330 96.1 L337 97.4 L344 98.7 L351 99.9 L358 101.1 L365 102.3 L372 103.4 L379 104.5 L386 105.6 L393 106.7 L400 107.7 L407 108.8 L414 109.8 L421 110.8 L428 112 L435 113.3 L442 114.8 L449 116.4 L456 118.1 L463 120 L470 121.9 L477 123.9 L484 125.9 L491 128 L498 130.1 L505 132.1 L512 134.1 L519 136.1 L526 138 L533 139.7 L540 141.4 L547 142.9 L554 144.3 L561 145.6 L568 146.7 L575 147.6 L582 148.4 L589 149 L596 149.4 L603 149.6 L610 149.7 L617 149.8 L624 150.4 L631 152.1 L638 154.3 L645 156.1 L652 158.2 L659 160.6 L666 163.2 L673 166.1 L680 169.1 L687 172.1 L694 175.1 L701 178 L708 180.8 L715 183.7 L722 186.6 L729 189.4 L736 192.2 L743 194.9 L750 197.4 L757 199.8 L764 201.9 L771 203.3 L778 203.5 L785 201.6 L792 197.8 L799 193 L806 187.6 L813 181.8 L820 175.7 L827 169.2 L834 162.3 L841 155.3 L848 148.5 L855 142.1 L862 136.2 L869 131.2 L876 127.9 L883 127.1 L890 129.2 L897 132.3 L904 135.5 L911 137.7 L918 136.3 L925 130.8 L932 122.3"/>
+        <path pathLength="1" stroke="#F27B01" stroke-width="2.6" opacity="0.92" d="M-20 -45 L-13 -40.7 L-6 -36.4 L1 -31.9 L8 -27.4 L15 -22.8 L22 -18.1 L29 -13.4 L36 -8.7 L43 -3.9 L50 0.9 L57 5.7 L64 10.6 L71 15.4 L78 20.3 L85 25.1 L92 30 L99 34.8 L106 39.7 L113 44.5 L120 49.2 L127 54 L134 58.7 L141 63.4 L148 68.1 L155 72.7 L162 77.3 L169 81.8 L176 86.2 L183 90.7 L190 95 L197 99.3 L204 103.5 L211 107.7 L218 111.7 L225 115.7 L232 119.7 L239 123.5 L246 127.2 L253 130.9 L260 134.5 L267 137.9 L274 141.3 L281 144.5 L288 147.7 L295 150.7 L302 153.6 L309 156.4 L316 159 L323 161.6 L330 164.3 L337 166.2 L344 168.3 L351 170.3 L358 172.1 L365 173.9 L372 175.7 L379 177.5 L386 179.2 L393 180.9 L400 182.5 L407 184.1 L414 185.7 L421 187.3 L428 189.1 L435 191.1 L442 193.2 L449 195.5 L456 197.9 L463 200.4 L470 202.9 L477 205.6 L484 208.2 L491 210.9 L498 213.6 L505 216.2 L512 218.7 L519 221.2 L526 223.6 L533 225.8 L540 227.8 L547 229.6 L554 231.2 L561 232.6 L568 233.6 L575 234.3 L582 234.6 L589 234.5 L596 234.1 L603 233.7 L610 233.7 L617 234 L624 234.6 L631 235.3 L638 236.3 L645 237.5 L652 238.9 L659 240.6 L666 242.4 L673 244.4 L680 246.5 L687 248.8 L694 251.3 L701 253.8 L708 256.5 L715 259.2 L722 261.9 L729 264.6 L736 267.2 L743 269.8 L750 272.2 L757 274.4 L764 276.4 L771 277.7 L778 278 L785 276 L792 271.4 L799 265.9 L806 259.9 L813 253.9 L820 248 L827 242 L834 235.7 L841 229.3 L848 223.5 L855 218.4 L862 214.2 L869 211.3 L876 211.7 L883 215.7 L890 221.7 L897 228.7 L904 235.8 L911 242.2 L918 245.9"/>
+        <path pathLength="1" stroke="#A2BFE2" stroke-width="2" opacity="0.3" d="M-20 -12 L-13 -7.5 L-6 -2.9 L1 2 L8 7 L15 12.2 L22 17.5 L29 22.8 L36 28.3 L43 33.8 L50 39.3 L57 44.9 L64 50.5 L71 56.1 L78 61.7 L85 67.4 L92 73 L99 78.6 L106 84.2 L113 89.7 L120 95.2 L127 100.7 L134 106.2 L141 111.6 L148 116.9 L155 122.2 L162 127.5 L169 132.6 L176 137.7 L183 142.8 L190 147.7 L197 152.6 L204 157.4 L211 162.1 L218 166.7 L225 171.3 L232 175.7 L239 180 L246 184.2 L253 188.4 L260 192.3 L267 196.2 L274 200 L281 203.6 L288 207.1 L295 210.4 L302 213.7 L309 216.7 L316 219.6 L323 222.4 L330 224.8 L337 227.3 L344 229.7 L351 232.1 L358 234.4 L365 236.8 L372 239.1 L379 241.4 L386 243.7 L393 246 L400 248.2 L407 250.4 L414 252.6 L421 254.9 L428 257.6 L435 260.7 L442 264.1 L449 267.8 L456 271.7 L463 275.9 L470 280.2 L477 284.5 L484 289 L491 293.3 L498 297.6 L505 301.7 L512 305.6 L519 309.3 L526 312.7 L533 315.7 L540 318.4 L547 320.6 L554 322.4 L561 323.7 L568 324.5 L575 324.8 L582 324.5 L589 323.8 L596 322.8 L603 321.7 L610 320.6 L617 319.5 L624 318.6 L631 318 L638 317.7 L645 317.8 L652 318.3 L659 319.2 L666 320.7 L673 322.4 L680 324.4 L687 326.4 L694 328.5 L701 330.6 L708 332.8 L715 335 L722 337.2 L729 339.3 L736 341.4 L743 343.3 L750 345.1 L757 346.7 L764 348.2 L771 349.5 L778 349.7 L785 348.6 L792 346.7 L799 344.1 L806 340.2 L813 335.3 L820 329.5 L827 323.2 L834 316.6 L841 309.8 L848 303.5 L855 298.1 L862 293.8 L869 291.6 L876 293.3 L883 297.9 L890 304.5 L897 312.1 L904 319.6 L911 326.3 L918 328.6 L925 325.2"/>
+        <path pathLength="1" stroke="#A2BFE2" stroke-width="2" opacity="0.17" d="M-20 18 L-13 22.9 L-6 28.1 L1 33.6 L8 39.4 L15 45.3 L22 51.5 L29 57.7 L36 64.1 L43 70.5 L50 77 L57 83.6 L64 90.2 L71 96.9 L78 103.5 L85 110.2 L92 116.8 L99 123.5 L106 130.1 L113 136.7 L120 143.3 L127 149.9 L134 156.4 L141 162.8 L148 169.2 L155 175.6 L162 181.9 L169 188.1 L176 194.3 L183 200.4 L190 206.4 L197 212.3 L204 218.1 L211 223.9 L218 229.6 L225 235.1 L232 240.6 L239 245.9 L246 251.2 L253 256.4 L260 261.4 L267 266.3 L274 271 L281 275.7 L288 280.2 L295 284.6 L302 288.7 L309 292.8 L316 296.8 L323 300.5 L330 304.1 L337 307.5 L344 310.6 L351 313.7 L358 316.7 L365 319.7 L372 322.7 L379 325.6 L386 328.5 L393 331.4 L400 334.3 L407 337.1 L414 339.9 L421 342.7 L428 345.6 L435 348.7 L442 351.9 L449 355.2 L456 358.6 L463 362 L470 365.4 L477 368.9 L484 372.4 L491 375.9 L498 379.3 L505 382.6 L512 385.8 L519 388.9 L526 391.9 L533 394.7 L540 397.2 L547 399.6 L554 401.6 L561 403.4 L568 404.7 L575 405.6 L582 406.1 L589 406.1 L596 405.7 L603 404.9 L610 403.9 L617 402.9 L624 402 L631 401.1 L638 400.3 L645 399.7 L652 399.4 L659 399.3 L666 399.5 L673 400.1 L680 400.9 L687 402 L694 403.5 L701 405.2 L708 407.4 L715 409.9 L722 412.7 L729 415.6 L736 418.7 L743 421.7 L750 424.5 L757 426.9 L764 428.6 L771 429.5 L778 429.1 L785 427.6 L792 425.1 L799 421.8 L806 418 L813 413.1 L820 407 L827 400.4 L834 393.6 L841 386.6 L848 379.9 L855 373.3 L862 367.2 L869 363.6 L876 363.3 L883 366.5 L890 372.7 L897 380.7 L904 389.2 L911 396.9 L918 401.2 L925 397.2"/>
+        <path pathLength="1" stroke="#A2BFE2" stroke-width="2" opacity="0.09" d="M-20 48 L-13 53.4 L-6 59.3 L1 65.6 L8 72.2 L15 79.1 L22 86.2 L29 93.5 L36 100.9 L43 108.3 L50 115.9 L57 123.4 L64 131.1 L71 138.7 L78 146.4 L85 154 L92 161.7 L99 169.3 L106 177 L113 184.6 L120 192.1 L127 199.6 L134 207.1 L141 214.5 L148 221.8 L155 229.2 L162 236.4 L169 243.5 L176 250.6 L183 257.6 L190 264.5 L197 271.4 L204 278.1 L211 284.7 L218 291.3 L225 297.7 L232 304.1 L239 310.3 L246 316.4 L253 322.4 L260 328.3 L267 334 L274 339.7 L281 345.1 L288 350.5 L295 355.7 L302 360.7 L309 365.6 L316 370.3 L323 374.9 L330 379.3 L337 383.5 L344 387.6 L351 391.4 L358 395 L365 398.5 L372 402 L379 405.4 L386 408.8 L393 412.2 L400 415.5 L407 418.8 L414 422.1 L421 425.4 L428 428.7 L435 432.2 L442 435.6 L449 439.1 L456 442.6 L463 446.2 L470 449.8 L477 453.3 L484 456.8 L491 460.2 L498 463.5 L505 466.5 L512 469.4 L519 472.1 L526 474.6 L533 476.8 L540 478.9 L547 480.6 L554 482.2 L561 483.5 L568 484.6 L575 485.5 L582 486.2 L589 486.7 L596 487 L603 487.1 L610 487.1 L617 486.9 L624 486.7 L631 486.3 L638 486 L645 485.6 L652 485.2 L659 485 L666 484.9 L673 485.1 L680 485.7 L687 486.7 L694 488.3 L701 490.3 L708 492.7 L715 495.3 L722 497.9 L729 500.6 L736 503.2 L743 505.8 L750 508.1 L757 510.2 L764 511.7 L771 512.5 L778 512.5 L785 511.7 L792 509.7 L799 506.1 L806 501 L813 494.4 L820 487 L827 479 L834 471.2 L841 463.8 L848 457 L855 450.9 L862 445.8 L869 442 L876 440 L883 440.4"/>
+      </g>
+    </svg>
+  </div>
+  <div class="hero-scrim" aria-hidden="true"></div>
+  <div class="hero-content">
+    <h1 class="hl hero-h1"><span class="ember">Same request.</span> Two AIs. One asks what you want.</h1>
+    <p class="hero-sub">Shipper reads your finished build, runs four gates, and hands you a launch plan with drafted materials — or blocks you with exactly what to fix first.</p>
+    <a href="#get-it" class="cta">Get Shipper →</a>
+  </div>
+</header>
+
+<!-- ─── What it does ─── -->
+<section class="sec sec-paper">
+  <div class="inner">
+    <h2 class="hl sec-head">The three things it <span class="ember">does</span>.</h2>
+    <ol class="do-list">
+      <li class="do-item">
+        <span class="do-num">01</span>
+        <span class="do-text"><strong>Blocks early</strong> — catches builds that aren't launch-ready before you waste effort on materials.</span>
+      </li>
+      <li class="do-item">
+        <span class="do-num">02</span>
+        <span class="do-text"><strong>Routes your runway</strong> — decides which materials earn the effort for the time you have, in leverage order.</span>
+      </li>
+      <li class="do-item">
+        <span class="do-num">03</span>
+        <span class="do-text"><strong>Drafts what it routes you to</strong> — blurb, landing copy, 60-second script, pitch deck, judge guide.</span>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ─── The duel ─── -->
+<section class="sec sec-paper" style="padding-top: 0;">
+  <div class="inner">
+    <h2 class="hl sec-head">The <span class="ember">duel</span>.</h2>
+    <div class="duel-prompt">"I have a finished build — I need help launching it."</div>
+    <div class="duel-cols">
+      <div class="duel-generic">
+        <span class="duel-label">Generic AI</span>
+        <p>"Of course! Here are some launch materials we can create:</p>
+        <ul>
+          <li>Pitch blurb</li>
+          <li>Landing page</li>
+          <li>60-second video script</li>
+          <li>Pitch deck</li>
+        </ul>
+        <p>Where would you like to start?"</p>
+      </div>
+      <div class="duel-shipper">
+        <span class="duel-label">Shipper</span>
+<pre>Reading the build.
+Gate 1: worked sample committed?
+→ No.
+<span class="block">BLOCK</span> — Commit one real run first.
+The landing page is drafted the moment
+there's something for it to point at.</pre>
+      </div>
+    </div>
+    <p class="duel-payoff">One AI hands you a menu. The other reads the build first.</p>
+    <div class="video-embed">
+      <iframe
+        src="https://drive.google.com/file/d/1iOguHB9q9dY6oJ80DVUIDcljJz-3b-ml/preview"
+        allow="autoplay"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Founder ─── -->
+<section class="sec sec-navy">
+  <div class="inner">
+    <blockquote class="founder">
+      <p class="founder-quote">"I was entering a lot of contests and rebuilding the launch stack from scratch every time — watching what the top submissions had that mine didn't. I built Shipper so I could focus on making a really good tool instead of rushing to recreate the materials."</p>
+      <p class="founder-attr">— Roc, repeat ICM entrant</p>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ─── Get it ─── -->
+<section class="sec sec-paper" id="get-it">
+  <div class="inner">
+    <h2 class="hl sec-head">Get <span class="ember">Shipper</span>.</h2>
+    <a href="https://github.com/rocleemusic/shipper" class="cta" style="margin-bottom: var(--sp-6);">Get Shipper on GitHub →</a>
+    <ol class="setup-list">
+      <li class="setup-item">
+        <span class="setup-num">1</span>
+        <span class="setup-text">Create a Claude project. Add every file in the <code>slipway</code> folder to its knowledge.</span>
+      </li>
+      <li class="setup-item">
+        <span class="setup-num">2</span>
+        <span class="setup-text">Project instructions: <code>"Read identity.md and rules.md. You are Shipper. Run the four gates in order."</code></span>
+      </li>
+      <li class="setup-item">
+        <span class="setup-num">3</span>
+        <span class="setup-text">Paste your repo, runway, and audience. Get back a plan and drafts.</span>
+      </li>
+    </ol>
+    <div class="secondary-links">
+      <a href="../shipper-judge-guide.html" class="secondary-link">Judge Guide</a>
+      <a href="../shipper-deck/index.html" class="secondary-link">Pitch Deck</a>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

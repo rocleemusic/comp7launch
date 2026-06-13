@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Judge Guide — Sonar × CCI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #1a1a1a;
+      --ink:     #0d0d0d;
+      --surface: #242424;
+      --fg:      #ffffff;
+      --body:    #f2f2f2;
+      --muted:   #8a8a8a;
+      --accent:  #ec008c;
+      --lime:    #ccff00;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg);
+      color: var(--body);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 4px;
+      background-color: var(--accent);
+      z-index: 999;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 36px;
+    }
+
+    .page-header {
+      padding-top: 108px;
+      padding-bottom: 72px;
+      border-bottom: 1px solid #222;
+    }
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      margin-bottom: 36px;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--fg); }
+
+    .eyebrow {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--lime);
+      margin-bottom: 20px;
+    }
+
+    .page-title {
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--fg);
+      margin-bottom: 20px;
+    }
+
+    .page-intro {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 560px;
+    }
+
+    .content { padding: 72px 0 96px; }
+
+    .how-to-run {
+      background: var(--surface);
+      border-left: 3px solid var(--lime);
+      padding: 28px 32px;
+      margin-bottom: 64px;
+    }
+
+    .how-to-run-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--lime);
+      margin-bottom: 14px;
+    }
+
+    .how-to-run p {
+      font-size: 0.88rem;
+      color: var(--body);
+      line-height: 1.75;
+    }
+
+    .test-card {
+      border-top: 1px solid #252525;
+      padding: 48px 0;
+    }
+
+    .test-card:last-of-type { border-bottom: 1px solid #252525; }
+
+    .test-num {
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .test-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -0.015em;
+      margin-bottom: 28px;
+    }
+
+    .test-row {
+      margin-bottom: 22px;
+    }
+
+    .test-row-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .fire-block {
+      background: var(--ink);
+      border: 1px solid #2a2a2a;
+      padding: 16px 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      color: var(--body);
+      line-height: 1.65;
+    }
+
+    .expect-block {
+      background: var(--surface);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      font-size: 0.88rem;
+      color: var(--body);
+      line-height: 1.7;
+    }
+
+    .expect-block strong {
+      color: var(--fg);
+      font-weight: 700;
+    }
+
+    .expect-block code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      color: var(--accent);
+      background: rgba(236, 0, 140, 0.1);
+      padding: 1px 5px;
+    }
+
+    .why-block {
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.75;
+      font-style: italic;
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 1px solid #222;
+      margin: 64px 0;
+    }
+
+    .bar-section { margin-bottom: 64px; }
+
+    .bar-section-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--lime);
+      margin-bottom: 24px;
+    }
+
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .checklist li {
+      font-size: 0.88rem;
+      color: var(--body);
+      line-height: 1.65;
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .check {
+      color: var(--lime);
+      font-weight: 700;
+      flex-shrink: 0;
+      font-size: 0.8rem;
+    }
+
+    .walkthrough {
+      background: var(--ink);
+      border: 1px solid #222;
+      padding: 40px 36px;
+    }
+
+    .walkthrough-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--lime);
+      margin-bottom: 28px;
+    }
+
+    .walkthrough-input {
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid #2e2e2e;
+      padding: 14px 20px;
+      margin-bottom: 28px;
+      line-height: 1.65;
+      font-style: italic;
+    }
+
+    .walkthrough-steps {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .walkthrough-step {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 16px;
+      padding: 18px 0;
+      border-top: 1px solid #252525;
+      align-items: start;
+    }
+
+    .walkthrough-step:last-child { border-bottom: 1px solid #252525; }
+
+    .w-step-num {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      padding-top: 3px;
+    }
+
+    .w-step-text {
+      font-size: 0.88rem;
+      color: var(--body);
+      line-height: 1.7;
+    }
+
+    .w-step-text code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      color: var(--accent);
+    }
+
+    .walkthrough-payoff {
+      margin-top: 28px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.75;
+      font-style: italic;
+      border-top: 1px solid #222;
+      padding-top: 24px;
+    }
+
+    .walkthrough-payoff strong {
+      color: var(--lime);
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    footer {
+      padding: 36px 0;
+      border-top: 1px solid #202020;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .footer-brand {
+      font-size: 0.68rem;
+      font-weight: 600;
+      font-variant-caps: small-caps;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+    }
+
+    .footer-back {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .footer-back:hover { color: var(--fg); }
+
+    @media (max-width: 480px) {
+      .container { padding: 0 20px; }
+      .walkthrough { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar"></div>
+
+  <div class="container">
+
+    <header class="page-header">
+      <a href="../index.html" class="back-link">← Sonar</a>
+      <p class="eyebrow">Judge Guide</p>
+      <h1 class="page-title">Sonar × CCI</h1>
+      <p class="page-intro">Every entry below is a falsifiable prompt — fire it into Sonar, observe the output, check it against the Expect line. If the behavior doesn't match, the build failed its own claim. That falsifiability is the point.</p>
+    </header>
+
+    <div class="content">
+
+      <div class="how-to-run">
+        <p class="how-to-run-label">How to run</p>
+        <p>Open <code style="font-family:'Courier New',monospace;font-size:0.82rem;color:var(--lime)">sonar/rules.md</code> and <code style="font-family:'Courier New',monospace;font-size:0.82rem;color:var(--lime)">sonar/identity.md</code>. Feed both as the system prompt into any Claude session. Paste the prompt below. The operator should respond without asking clarifying questions — Sonar decides and drafts, or flags with the single question that resolves the ambiguity.</p>
+      </div>
+
+      <!-- TEST 1 -->
+      <div class="test-card">
+        <p class="test-num">01</p>
+        <p class="test-title">The core decision — DECLINE on a funding gap</p>
+        <div class="test-row">
+          <p class="test-row-label">Fire</p>
+          <div class="fire-block">Qualify Pebblewick Games: 4-person bootstrapped mobile puzzle studio. No press, no raise, no publisher deal.</div>
+        </div>
+        <div class="test-row">
+          <p class="test-row-label">Expect</p>
+          <div class="expect-block"><code>DECLINE</code>. Reason cites <strong>"no identifiable funding from any source"</strong> — not team size, not platform, not genre. Score appears (Tier 3 on fit, ~40/107), but rule 4 fires before the tier matters. Draft is brief and professional, not apologetic. No follow-up question.</div>
+        </div>
+        <div class="test-row">
+          <p class="test-row-label">Why it matters</p>
+          <p class="why-block">Rule 4 is the funding filter. Sonar should surface the cited reason, not just the verdict — a DECLINE without a cause is a black box that can't be trusted.</p>
+        </div>
+      </div>
+
+      <!-- TEST 2 -->
+      <div class="test-card">
+        <p class="test-num">02</p>
+        <p class="test-title">The pursue path — mid-fit promoted by a live catalyst</p>
+        <div class="test-row">
+          <p class="test-row-label">Fire</p>
+          <div class="fire-block">Qualify Lumen Hollow Games: ~40 staff, narrative-horror title, announced October ship date, seed-funded, no audio credits on their team page.</div>
+        </div>
+        <div class="test-row">
+          <p class="test-row-label">Expect</p>
+          <div class="expect-block"><code>PURSUE · primary-vendor</code>. Rule 6 fires (Tier 2 + live catalyst). Score ~69/107. Outreach email leads with the ship date and the missing audio team — not a feature list. CCI credit cited matches the genre: <em>Starfield</em> or <em>The Outer Worlds 2</em>, not a sports title. "The in" is named if a CRM contact exists.</div>
+        </div>
+        <div class="test-row">
+          <p class="test-row-label">Why it matters</p>
+          <p class="why-block">Proves the catalyst layer. Without the October ship date, this is NURTURE. With it, PURSUE. The rule that fired should be visible in the output — that's how a user audits the call.</p>
+        </div>
+      </div>
+
+      <!-- TEST 3 -->
+      <div class="test-card">
+        <p class="test-num">03</p>
+        <p class="test-title">The refusal — no fabrication on thin data</p>
+        <div class="test-row">
+          <p class="test-row-label">Fire</p>
+          <div class="fire-block">Qualify Triton Reef Games — can't find them anywhere.</div>
+        </div>
+        <div class="test-row">
+          <p class="test-row-label">Expect</p>
+          <div class="expect-block"><code>FLAG · not found</code>. Sonar names the exact gap: no studio matches the name or any URL. It asks the <strong>one question</strong> that resolves it ("Renamed, mis-spelled, or a sub-studio of a parent?"). It does not fabricate a score, a studio profile, or a guess. No verdict beyond FLAG.</div>
+        </div>
+        <div class="test-row">
+          <p class="test-row-label">Why it matters</p>
+          <p class="why-block">The identity doc says "Missing data is a signal, not a guess." This is the hardest claim. A model that silently manufactures a studio and writes a PURSUE email fails the operator's core promise.</p>
+        </div>
+      </div>
+
+      <!-- TEST 4 -->
+      <div class="test-card">
+        <p class="test-num">04</p>
+        <p class="test-title">The edge case — studio closure → follow the person</p>
+        <div class="test-row">
+          <p class="test-row-label">Fire</p>
+          <div class="fire-block">Re-triage Northwind Interactive. News says the studio shut down last week. We have Priya Anand (Audio Director) in our CRM, second-degree via Tom.</div>
+        </div>
+        <div class="test-row">
+          <p class="test-row-label">Expect</p>
+          <div class="expect-block">Two decisions in one run. (a) <code>DECLINE</code> the <em>company</em> — studio closed, fit drops to 0, dead vendor target. (b) <code>NURTURE</code> the <em>person</em> — Priya Anand. Draft is a <strong>warm check-in</strong>, not a pitch: acknowledge the news, ask where she's landing, keep the door open. Closure named as a relationship catalyst. Flag that her next job change triggers a fresh re-triage.</div>
+        </div>
+        <div class="test-row">
+          <p class="test-row-label">Why it matters</p>
+          <p class="why-block">This edge is in rules.md under Studio Closure. Good people scatter when studios close. Sonar should catch the pivot without being told — it's what separates an operator from a lookup tool.</p>
+        </div>
+      </div>
+
+      <!-- TEST 5 -->
+      <div class="test-card">
+        <p class="test-num">05</p>
+        <p class="test-title">The voice check — overflow nurture</p>
+        <div class="test-row">
+          <p class="test-row-label">Fire</p>
+          <div class="fire-block">Qualify Tidewright Studios: ~80 staff, action game, one Sr Sound Designer on team page, small publisher, recently shipped their last title.</div>
+        </div>
+        <div class="test-row">
+          <p class="test-row-label">Expect</p>
+          <div class="expect-block"><code>NURTURE · overflow angle</code>. Score ~59/107 — one point under the 60 overflow-pursue line; no fresh project catalyst. Watchlist entry names <strong>one specific watch trigger</strong> ("new project announcement or audio job post"). If a contact is <code>Overdue</code> in the CRM, a soft catch-up reason is noted alongside. Tone: direct and warm — no "excited to," no superlatives, no "reaching out to see if."</div>
+        </div>
+        <div class="test-row">
+          <p class="test-row-label">Why it matters</p>
+          <p class="why-block">NURTURE is not a soft DECLINE — it's a positioned watch with a trigger. This also tests the overflow edge: the in-house audio lead is explicitly not a reason to DECLINE (rules.md, in-house audio edge).</p>
+        </div>
+      </div>
+
+      <hr class="section-divider">
+
+      <!-- BAR -->
+      <div class="bar-section">
+        <p class="bar-section-title">Bar</p>
+        <ul class="checklist">
+          <li><span class="check">✓</span> 5 prompts, each with Fire + Expect</li>
+          <li><span class="check">✓</span> Every Expect is checkable in one read — no "it should generally"</li>
+          <li><span class="check">✓</span> Two prompts target refusals: fabrication (03) and edge handling (04)</li>
+          <li><span class="check">✓</span> One targets voice + tone (05)</li>
+          <li><span class="check">✓</span> All four verdicts covered: PURSUE (02) · NURTURE (05) · DECLINE (01, 04a) · FLAG (03, 04a edge)</li>
+        </ul>
+      </div>
+
+      <!-- WALKTHROUGH -->
+      <div class="walkthrough">
+        <p class="walkthrough-title">Walkthrough — one full session</p>
+        <div class="walkthrough-input">Qualify Northwind Studios: indie action-adventure, no audio team, no publisher deal, no raise announced.</div>
+        <ol class="walkthrough-steps">
+          <li class="walkthrough-step">
+            <span class="w-step-num">1</span>
+            <span class="w-step-text">Sonar reads the input against the scoring rubric (<code>reference/scoring-rubric.md</code>). Action-adventure scores high on genre (10). No audio team is an audio gap (22 points — the largest single cluster). But no funding from any source means rule 4 fires.</span>
+          </li>
+          <li class="walkthrough-step">
+            <span class="w-step-num">2</span>
+            <span class="w-step-text">Score is computed — call it 58/107 — but the funding filter (rule 4) fires before the tier matters. No publisher, no raise, no revenue signal, no grant. "Can't hire on normal terms."</span>
+          </li>
+          <li class="walkthrough-step">
+            <span class="w-step-num">3</span>
+            <span class="w-step-text">Verdict: <code>DECLINE</code>. Drafted artifact: a brief professional pass. No question handed back; the call is made.</span>
+          </li>
+          <li class="walkthrough-step">
+            <span class="w-step-num">4</span>
+            <span class="w-step-text">MASTER-sheet record emitted: action first (DECLINE), score breakdown supporting. Pastes straight into column 15 of the target sheet.</span>
+          </li>
+        </ol>
+        <div class="walkthrough-payoff">
+          What a generic AI does with the same input: writes a confident outreach paragraph — "Northwind Studios looks like a strong fit. Indie action-adventure. Recommend reaching out." No rubric, no funding check, no reason cited.<br><br>
+          <strong>That's the product.</strong> Sonar doesn't profile studios. It screens them.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-brand">Clean Cuts Interactive</span>
+        <a href="../index.html" class="footer-back">← Back to Sonar</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

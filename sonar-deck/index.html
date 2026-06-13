@@ -1,0 +1,599 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sonar — CCI Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; -webkit-font-smoothing: antialiased; }
+body { font-family: 'Montserrat', sans-serif; background: #0d0d0d; color: #f2f2f2; }
+
+.deck { position: relative; width: 100vw; height: 100vh; }
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+  background: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+}
+.slide.active { opacity: 1; pointer-events: all; }
+.slide.ink { background: #0d0d0d; }
+
+.slide-bar { flex-shrink: 0; height: 4px; background: #ec008c; }
+
+.slide-content {
+  flex: 1;
+  min-height: 0;
+  padding: 52px 120px 96px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+.slide-content.fill { justify-content: flex-start; }
+
+.slide-footer {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 0 56px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+.footer-brand {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8a8a8a;
+}
+.slide-num {
+  font-size: 11px;
+  font-weight: 500;
+  color: #8a8a8a;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+.slide-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #ec008c;
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+h1 {
+  font-size: clamp(3.2rem, 5.5vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.08;
+  color: #fff;
+  letter-spacing: -0.025em;
+  margin-bottom: 32px;
+}
+h2 {
+  font-size: clamp(2rem, 3.8vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin-bottom: 36px;
+  flex-shrink: 0;
+}
+
+.slide-subhead {
+  font-size: clamp(0.9rem, 1.25vw, 1.1rem);
+  font-weight: 400;
+  line-height: 1.7;
+  color: #f2f2f2;
+  max-width: 680px;
+}
+.slide-body {
+  font-size: clamp(0.88rem, 1.2vw, 1.05rem);
+  font-weight: 400;
+  line-height: 1.75;
+  color: #f2f2f2;
+  max-width: 760px;
+}
+
+.lime    { color: #ccff00; }
+.magenta { color: #ec008c; }
+.muted   { color: #8a8a8a; }
+
+.slide-blockquote {
+  border-left: 4px solid #ec008c;
+  padding: 10px 0 10px 32px;
+  margin-bottom: 28px;
+}
+.slide-blockquote p {
+  font-size: clamp(1.6rem, 2.8vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.22;
+  color: #fff;
+  letter-spacing: -0.018em;
+}
+
+.duel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 20px;
+}
+.duel-card {
+  background: #242424;
+  border-top: 3px solid #3a3a3a;
+  padding: 28px 30px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.duel-card.sonar-card { border-top-color: #ec008c; }
+.duel-card-header {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8a8a8a;
+  margin-bottom: 18px;
+  flex-shrink: 0;
+}
+.duel-card.sonar-card .duel-card-header { color: #ec008c; }
+.duel-card-body {
+  font-size: clamp(0.88rem, 1.2vw, 1rem);
+  font-weight: 400;
+  line-height: 1.7;
+  color: #f2f2f2;
+  font-style: italic;
+}
+.duel-verdict {
+  font-size: clamp(1.8rem, 2.8vw, 2.8rem);
+  font-weight: 700;
+  color: #ec008c;
+  letter-spacing: -0.015em;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+.duel-decline-body {
+  font-size: clamp(0.88rem, 1.2vw, 1rem);
+  font-weight: 400;
+  line-height: 1.65;
+  color: #f2f2f2;
+}
+.duel-score-line {
+  font-family: 'Courier New', ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: #8a8a8a;
+  font-variant-numeric: tabular-nums;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #3a3a3a;
+}
+.duel-payoff {
+  text-align: center;
+  font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+  font-weight: 600;
+  color: #ccff00;
+  letter-spacing: 0.01em;
+  flex-shrink: 0;
+}
+
+.verdict-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 18px;
+  flex: 1;
+  min-height: 0;
+}
+.verdict-card {
+  background: #242424;
+  border-left: 4px solid #ec008c;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+}
+.verdict-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #ec008c;
+  margin-bottom: 12px;
+}
+.verdict-desc {
+  font-size: clamp(0.85rem, 1.15vw, 1rem);
+  font-weight: 400;
+  line-height: 1.65;
+  color: #f2f2f2;
+}
+
+.stat-hero {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 40px;
+}
+.stat-number {
+  font-size: clamp(5rem, 8vw, 8rem);
+  font-weight: 700;
+  color: #ec008c;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  flex-shrink: 0;
+}
+.stat-caption {
+  font-size: clamp(0.88rem, 1.2vw, 1rem);
+  font-weight: 400;
+  line-height: 1.65;
+  color: #f2f2f2;
+  max-width: 380px;
+}
+.bars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+  max-width: 640px;
+}
+.bar-row {
+  display: grid;
+  grid-template-columns: 176px 1fr 58px;
+  align-items: center;
+  gap: 18px;
+}
+.bar-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #f2f2f2;
+  white-space: nowrap;
+}
+.bar-track {
+  height: 8px;
+  background: #3a3a3a;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  background: #ec008c;
+  border-radius: 4px;
+}
+.bar-value {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #8a8a8a;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.bar-footnote {
+  font-size: 0.72rem;
+  color: #8a8a8a;
+  line-height: 1.6;
+  max-width: 640px;
+}
+
+.code-block-wrap {
+  background: #0d0d0d;
+  border-left: 4px solid #ec008c;
+  padding: 28px 32px;
+  margin-bottom: 20px;
+}
+.code-block-wrap pre {
+  font-family: 'JetBrains Mono', 'IBM Plex Mono', 'Courier New', ui-monospace, monospace;
+  font-size: clamp(0.74rem, 1vw, 0.88rem);
+  line-height: 1.9;
+  color: #f2f2f2;
+  white-space: pre;
+}
+.code-note {
+  font-size: 0.72rem;
+  color: #8a8a8a;
+  line-height: 1.6;
+  max-width: 660px;
+}
+
+.cta-url {
+  font-size: clamp(1.2rem, 2vw, 1.9rem);
+  font-weight: 600;
+  color: #ec008c;
+  letter-spacing: 0.01em;
+  margin-bottom: 24px;
+}
+.cta-subtext {
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  font-weight: 400;
+  line-height: 1.65;
+  color: #8a8a8a;
+  max-width: 580px;
+}
+
+.nav-dots {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 200;
+  padding: 8px 14px;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3a3a3a;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  display: block;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.dot:hover  { background: #8a8a8a; transform: scale(1.4); }
+.dot.active { background: #ec008c; transform: scale(1.3); }
+</style>
+</head>
+<body>
+<div class="deck">
+
+<div class="slide ink" data-index="0">
+  <div class="slide-bar"></div>
+  <div class="slide-content">
+    <div class="slide-label">Clean Cuts Interactive</div>
+    <h1>Sonar&nbsp;—<br>First-pass triage,&nbsp;<span class="lime">#not a pitch generator.</span></h1>
+    <p class="slide-subhead">Qualify a prospect. Get one verdict and a drafted response. Sonar decides. It doesn't hand the question back.</p>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-brand">Clean Cuts Interactive</span>
+    <span class="slide-num">01 / 08</span>
+  </div>
+</div>
+
+<div class="slide" data-index="1">
+  <div class="slide-bar"></div>
+  <div class="slide-content">
+    <div class="slide-label">The problem</div>
+    <blockquote class="slide-blockquote">
+      <p>Studios hit your inbox every week. <span class="lime">Most aren't right.</span> Screening them by hand takes time you don't have.</p>
+    </blockquote>
+    <p class="slide-body">Wrong genre. No funding. Wrong moment. A generic AI writes a confident paragraph about all of them anyway.</p>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-brand">Clean Cuts Interactive</span>
+    <span class="slide-num">02 / 08</span>
+  </div>
+</div>
+
+<div class="slide" data-index="2">
+  <div class="slide-bar"></div>
+  <div class="slide-content fill" style="padding-top: 36px; padding-bottom: 80px;">
+    <div class="slide-label">The duel</div>
+    <h2 style="font-size: clamp(1.8rem, 3.2vw, 3.2rem); margin-bottom: 22px;">Same prompt. <span class="lime">Two answers.</span></h2>
+    <div class="duel-grid">
+      <div class="duel-card">
+        <div class="duel-card-header">Generic AI</div>
+        <div class="duel-card-body">"Northwind Studios looks like a strong fit. They're an indie action-adventure studio with a recent title and an active team. We recommend reaching out to explore a partnership."</div>
+      </div>
+      <div class="duel-card sonar-card">
+        <div class="duel-card-header">Sonar</div>
+        <div class="duel-verdict">DECLINE.</div>
+        <div class="duel-decline-body">No funding from any source detected — publisher, raise, or revenue. Can't hire on normal terms.</div>
+        <div class="duel-score-line">Score: 58/107 · funding 0 · audio gap 22 · genre 10 · active dev 12</div>
+      </div>
+    </div>
+    <div class="duel-payoff">Sonar doesn't profile studios. It screens them.</div>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-brand">Clean Cuts Interactive</span>
+    <span class="slide-num">03 / 08</span>
+  </div>
+</div>
+
+<div class="slide" data-index="3">
+  <div class="slide-bar"></div>
+  <div class="slide-content fill" style="padding-top: 44px; padding-bottom: 80px;">
+    <div class="slide-label">What it decides</div>
+    <h2>One verdict, <span class="lime">every time.</span></h2>
+    <div class="verdict-grid">
+      <div class="verdict-card">
+        <div class="verdict-label">Pursue</div>
+        <div class="verdict-desc">Qualified fit, catalyst present. Email drafted and ready to send.</div>
+      </div>
+      <div class="verdict-card">
+        <div class="verdict-label">Nurture</div>
+        <div class="verdict-desc">Watchlist. Ping on a ship date, audio job post, or a warm reason to reconnect.</div>
+      </div>
+      <div class="verdict-card">
+        <div class="verdict-label">Decline</div>
+        <div class="verdict-desc">Brief. Professional. Done. No fabrication, no false signal.</div>
+      </div>
+      <div class="verdict-card">
+        <div class="verdict-label">Flag</div>
+        <div class="verdict-desc">One question a human needs to call. Sonar names it; it doesn't guess past it.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-brand">Clean Cuts Interactive</span>
+    <span class="slide-num">04 / 08</span>
+  </div>
+</div>
+
+<div class="slide" data-index="4">
+  <div class="slide-bar"></div>
+  <div class="slide-content">
+    <div class="slide-label">The decision math</div>
+    <h2>Every verdict is <span class="lime">traceable.</span></h2>
+    <div class="stat-hero">
+      <div class="stat-number">107</div>
+      <div class="stat-caption">points. Fit score, not a vibe check. Funding is the gating cluster — 30 pts alone.</div>
+    </div>
+    <div class="bars-list">
+      <div class="bar-row">
+        <span class="bar-label">Funding (gating)</span>
+        <div class="bar-track"><div class="bar-fill" style="width:28%"></div></div>
+        <span class="bar-value">30 pts</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Audio gap</span>
+        <div class="bar-track"><div class="bar-fill" style="width:21%"></div></div>
+        <span class="bar-value">22 pts</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Active dev</span>
+        <div class="bar-track"><div class="bar-fill" style="width:11%"></div></div>
+        <span class="bar-value">12 pts</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Genre fit</span>
+        <div class="bar-track"><div class="bar-fill" style="width:9%"></div></div>
+        <span class="bar-value">10 pts</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Platform</span>
+        <div class="bar-track"><div class="bar-fill" style="width:9%"></div></div>
+        <span class="bar-value">10 pts</span>
+      </div>
+    </div>
+    <p class="bar-footnote">Output record pastes straight into col-15 of the MASTER sheet — action + warm intro first, score breakdown supporting.</p>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-brand">Clean Cuts Interactive</span>
+    <span class="slide-num">05 / 08</span>
+  </div>
+</div>
+
+<div class="slide" data-index="5">
+  <div class="slide-bar"></div>
+  <div class="slide-content">
+    <div class="slide-label">A committed run</div>
+    <h2>Not a demo. <span class="lime">A real decision.</span></h2>
+    <div class="code-block-wrap">
+<pre><span class="lime">PURSUE</span> · primary-vendor
+<span class="magenta">Action:</span>    Email Dana Reyes (Exec Producer) — October ship date, no audio team yet.
+<span class="magenta">The in:</span>    Warm — Dana Reyes, met at GDC 2025 (CRM).
+<span class="magenta">Score:</span>     <span class="muted">69/107 · Tier 2 — audio gap 22, active dev 12, horror/narrative 10; PURSUE via live catalyst.</span>
+<span class="magenta">Catalyst:</span>  project — announced October ship window.</pre>
+    </div>
+    <p class="code-note">Six worked decisions in examples.md — one per verdict, plus a not-found failure. Fire the prompt, get the same output.</p>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-brand">Clean Cuts Interactive</span>
+    <span class="slide-num">06 / 08</span>
+  </div>
+</div>
+
+<div class="slide" data-index="6">
+  <div class="slide-bar"></div>
+  <div class="slide-content">
+    <div class="slide-label">Why this build</div>
+    <blockquote class="slide-blockquote">
+      <p>Built by the person <span class="lime">running the workflow.</span></p>
+    </blockquote>
+    <p class="slide-body">CCI does BD the same way Sonar does — relationship-driven, ICP-disciplined, no cold-spray. This is the operator built for the workflow I'm already running. Then Shipper — the launch operator built the same day — dogfooded it and produced this deck.</p>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-brand">Clean Cuts Interactive</span>
+    <span class="slide-num">07 / 08</span>
+  </div>
+</div>
+
+<div class="slide ink" data-index="7">
+  <div class="slide-bar"></div>
+  <div class="slide-content">
+    <div class="slide-label">Get Sonar</div>
+    <h2>Drop it in a project. <span class="lime">Start qualifying.</span></h2>
+    <div class="cta-url">github.com/rocleemusic/sonar-operator</div>
+    <p class="cta-subtext">Swap the rubric, catalog, and ICP for your own. The verdict logic carries over unchanged.</p>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-brand">Clean Cuts Interactive</span>
+    <span class="slide-num">08 / 08</span>
+  </div>
+</div>
+
+<nav class="nav-dots" aria-label="Slide navigation">
+  <button class="dot" aria-label="Slide 1"></button>
+  <button class="dot" aria-label="Slide 2"></button>
+  <button class="dot" aria-label="Slide 3"></button>
+  <button class="dot" aria-label="Slide 4"></button>
+  <button class="dot" aria-label="Slide 5"></button>
+  <button class="dot" aria-label="Slide 6"></button>
+  <button class="dot" aria-label="Slide 7"></button>
+  <button class="dot" aria-label="Slide 8"></button>
+</nav>
+
+</div>
+<script>
+(function () {
+  var STORE_KEY = 'sonar-deck-pos';
+  var slides = document.querySelectorAll('.slide');
+  var dots   = document.querySelectorAll('.dot');
+  var cur = 0;
+
+  try {
+    var v = parseInt(localStorage.getItem(STORE_KEY), 10);
+    if (!isNaN(v) && v >= 0 && v < slides.length) cur = v;
+  } catch (_) {}
+
+  for (var i = 0; i < slides.length; i++) slides[i].style.transition = 'none';
+  slides[cur].classList.add('active');
+  dots[cur].classList.add('active');
+
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      for (var i = 0; i < slides.length; i++) slides[i].style.transition = '';
+    });
+  });
+
+  function goTo(n) {
+    var next = Math.max(0, Math.min(n, slides.length - 1));
+    if (next === cur) return;
+    slides[cur].classList.remove('active');
+    dots[cur].classList.remove('active');
+    cur = next;
+    slides[cur].classList.add('active');
+    dots[cur].classList.add('active');
+    try { localStorage.setItem(STORE_KEY, cur); } catch (_) {}
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault(); goTo(cur + 1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault(); goTo(cur - 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault(); goTo(0);
+    } else if (e.key === 'End') {
+      e.preventDefault(); goTo(slides.length - 1);
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.nav-dots')) goTo(cur + 1);
+  });
+
+  dots.forEach(function (dot, i) {
+    dot.addEventListener('click', function (e) {
+      e.stopPropagation();
+      goTo(i);
+    });
+  });
+})();
+</script>
+</body>
+</html>
